@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-mongoose.connect('mongodb+srv://sa:250020@cluster0-288g4.mongodb.net/test?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb+srv://sa:250020@cluster0-288g4.mongodb.net/Condo?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
 
 var db = mongoose.connection;
 
