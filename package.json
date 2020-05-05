@@ -23,5 +23,6 @@
     "mongodb": "^3.5.7",
     "mongoose": "^5.9.10"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "jshintConfig": { "esversion": 8, "strict": "implied", "devel": true, "node": true, "globals": {} }
 }

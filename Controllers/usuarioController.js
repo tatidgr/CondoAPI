@@ -1,24 +1,26 @@
 
-Usuario = require('../Models/usuarioModel.js');
+let Usuario = require('../Models/usuarioModel.js');
 
-exports.index = (req, res) => {
-    Usuario.get ((err, usuarios) => {
-        if(err) {
-            res.json({
-                status: 'error',
-                message: 'err'
-            });
-        }
+exports.index = get;
+exports.new = novo;
+exports.view = view;
+exports.update = update;
+exports.delete = del;
 
+async function get (req, res) {
+    try {
+        const usuarios = await Usuario.find({});
         res.json({
-            status: 'success',
-            message: 'Usuario consultado com sucesso',
+            status: 200,
+            message: 'Usuário consultado com sucesso',
             data: usuarios
         });
-    });
-};
+      } catch (err) {
+        res.status(500).send(err);
+      }
+}
 
-exports.new = (req, res) => {
+async function novo (req, res) {
     let usuario = new Usuario();
     usuario.nome = req.body.nome ? req.body.nome : usuario.nome;
     usuario.sobrenome = req.body.sobrenome;
@@ -31,76 +33,51 @@ exports.new = (req, res) => {
     //usuario.PCD = req.body.PCD;
     //usuario.doencaCronica = req.body.doencaCronica;
     usuario.senha = req.body.senha;
-
-    usuario.save((err) => {
-        if (err)
-        res.json(err);
-    
-
+    try {
+        await usuario.save();
         res.json({
-            message: 'Novo usuario criado!',
+            status: 200,
+            message: 'Usuário criado com sucesso'
+        });
+      } catch (err) {
+        res.status(500).send(err);
+      }
+}
+
+async function view (req, res) {
+    try {
+        const usuario = await Usuario.findById(req.params.usuario_id);
+        res.json({
+            status: 200,
+            message: 'Usuário consultado com sucesso',
             data: usuario
         });
+      } catch (err) {
+        res.status(500).send(err);
+      }
+}
 
-    });
-};
-
-exports.view = (req, res) => {
-    Usuario.findById(req.params.usuario_id, (err, usuario)=>{
-        if(err){
-            res.send(err);
-        }
-
+async function update (req, res) {
+    try { 
+        await Usuario.findByIdAndUpdate(req.params.usuario_id, req.body);
         res.json({
-            message: 'Carregando dados do usuario...',
-            data: usuario
+            status: 200,
+            message: 'Usuário atualizado com sucesso'
         });
-    });
-};
+      } catch (err) {
+        res.status(500).send(err);
+      }
+}
 
-exports.update = (req, res) => {
-    Usuario.findById(req.params.usuario_id, (err, usuario)=>{
-        if(err){
-            res.send(err);
-        }
-
-        usuario.nome = req.body.name ? req.body.name : usuario.nome;
-        usuario.sobrenome = req.body.sobrenome;
-        //usuario.genero = req.body.genero;
-        usuario.celular = req.body.celular;
-        //usuario.celularContato = req.body.celularContato;
-        //usuario.endereco = req.body.endereco;
-        usuario.nomeDoCondominio = req.body.nomeDoCondominio;
-        //usuario.dataDeNascimento = req.body.dataDeNascimento;
-        //usuario.PCD = req.body.PCD;
-        //usuario.doencaCronica = req.body.doencaCronica;
-        usuario.senha = req.body.senha;
-
-        usuario.save((err) => {
-            if (err)
-            res.json(err);
-    
-            res.json({
-                message: 'Usuario atualizado!',
-                data: usuario
-            });
-    
-        });
-    });
-};
-
-exports.delete = (req, res) => {
-    Usuario.remove({
-        _id: req.params.usuario_id
-    }, (err, usuario) =>{
-        if(err){
-            res.send(err);
-        }
-
+async function del (req, res) {
+    try { 
+        const usuario = await Usuario.findById(req.params.usuario_id);
+        await Usuario.findByIdAndDelete(usuario._id);
         res.json({
-            message: 'Usuario excluido!',
-            data: usuario
+            status: 200,
+            message: 'Usuário excluído com sucesso'
         });
-
-    });
-};
+      } catch (err) {
+        res.status(500).send(err);
+      }
+}
